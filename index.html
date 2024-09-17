@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Investment App</title>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="h-screen bg-gray-100" x-data="investmentApp()">
+    <!-- Main Container -->
+    <div class="h-full md:flex">
+        <!-- Sidebar Navigation -->
+        <div
+            class="flex flex-col items-center p-4 bg-white shadow-lg md:w-64 md:h-full md:fixed md:left-0 md:top-0 md:bottom-0">
+            <!-- Logo / Brand Name -->
+            <div class="flex items-center mb-8">
+                <!-- Replace SVG with your logo if desired -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-600" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="ml-2 text-xl font-bold text-gray-800">CoinInvest</span>
+            </div>
+            <!-- Navigation Buttons -->
+            <nav class="flex flex-col w-full">
+                <button @click="page = 'calculator'; clearForm()"
+                    :class="{ 'bg-blue-100 text-blue-600': page === 'calculator' }"
+                    class="flex items-center w-full px-4 py-2 mb-2 text-gray-700 rounded hover:bg-gray-100">
+                    <!-- Calculator Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 9h8M8 13h6M9 17h6M4 6h16M4 20h16M4 6v14M20 6v14" />
+                    </svg>
+                    <span class="font-medium">Calculator</span>
+                </button>
+                <button @click="page = 'investments'"
+                    :class="{ 'bg-blue-100 text-blue-600': page === 'investments' }"
+                    class="flex items-center w-full px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
+                    <!-- Investments Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-medium">Investments</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6 md:ml-64">
+            <!-- Calculator Page -->
+            <div x-show="page === 'calculator'" x-cloak>
+                <h1 class="mb-6 text-3xl font-bold text-gray-800">Coin Investment Calculator</h1>
+
+                <!-- Form and Results Layout -->
+                <div class="md:flex md:space-x-6">
+                    <!-- Form Card -->
+                    <div class="p-6 mb-6 bg-white rounded-lg shadow-md md:mb-0 md:flex-1">
+                        <h2 class="mb-4 text-xl font-semibold text-gray-700">Investment Details</h2>
+                        <!-- Form Grid -->
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <!-- Coin Name -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Coin Name</label>
+                                <input type="text" x-model="coinName" placeholder="Enter coin name"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Invested Price -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Invested Price (per coin)</label>
+                                <input type="number" x-model.number="investedPrice" placeholder="Enter invested price"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Expected Price -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Expected Price (per coin)</label>
+                                <input type="number" x-model.number="expectedPrice" placeholder="Enter expected price"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Expected Loss Price -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Expected Loss Price (per coin)</label>
+                                <input type="number" x-model.number="expectedLossPrice"
+                                    placeholder="Enter expected loss price"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Investment Amount -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Investment Amount</label>
+                                <input type="number" x-model.number="investmentAmount"
+                                    placeholder="Enter investment amount"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Starting Time -->
+                            <div>
+                                <label class="block mb-1 font-medium text-gray-600">Starting Time</label>
+                                <input type="datetime-local" x-model="startingTime"
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="md:col-span-2">
+                                <label class="block mb-1 font-medium text-gray-600">Duration</label>
+                                <div class="flex space-x-2">
+                                    <input type="number" x-model.number="durationDays" placeholder="Days"
+                                        class="w-1/3 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="number" x-model.number="durationHours" placeholder="Hours"
+                                        class="w-1/3 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="number" x-model.number="durationMinutes" placeholder="Minutes"
+                                        class="w-1/3 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save and Cancel Buttons -->
+                        <div class="mt-6 text-center">
+                            <button @click="saveInvestment()"
+                                class="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                <span x-text="isEditing ? 'Update Investment' : 'Save Investment'"></span>
+                            </button>
+                            <template x-if="isEditing">
+                                <button @click="clearForm()"
+                                    class="w-full px-4 py-2 mt-2 font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                    Cancel
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Results Card -->
+                    <div class="p-6 bg-white rounded-lg shadow-md md:flex-1">
+                        <h2 class="mb-4 text-xl font-semibold text-gray-700">Investment Summary</h2>
+                        <div class="space-y-4">
+                            <p class="text-gray-700">Total Coins Owned: <span class="font-semibold text-gray-800"
+                                    x-text="totalCoins"></span></p>
+                            <p class="text-gray-700">Lowest Price of Loss: <span class="font-semibold text-yellow-600"
+                                    x-text="investedPrice"></span></p>
+                            <p class="text-gray-700">Potential Profit: <span class="font-semibold text-green-600"
+                                    x-text="profit"></span></p>
+                            <p class="text-gray-700">Potential Loss at Expected Loss Price: <span
+                                    class="font-semibold text-red-600" x-text="expectedLoss"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investments Page -->
+            <div x-show="page === 'investments'" x-cloak>
+                <h1 class="mb-6 text-3xl font-bold text-gray-800">Saved Investments</h1>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <template x-for="(investment, index) in investments" :key="index">
+                        <div class="p-6 bg-white rounded-lg shadow-md">
+                            <h3 class="mb-4 text-2xl font-semibold text-gray-800" x-text="investment.coinName"></h3>
+                            <div class="space-y-2">
+                                <p class="text-gray-700">Invested Price: <span class="font-semibold text-gray-800"
+                                        x-text="investment.investedPrice"></span></p>
+                                <p class="text-gray-700">Expected Price: <span class="font-semibold text-gray-800"
+                                        x-text="investment.expectedPrice"></span></p>
+                                <p class="text-gray-700">Expected Loss Price: <span class="font-semibold text-gray-800"
+                                        x-text="investment.expectedLossPrice"></span></p>
+                                <p class="text-gray-700">Investment Amount: <span class="font-semibold text-gray-800"
+                                        x-text="investment.investmentAmount"></span></p>
+                                <p class="text-gray-700">Total Coins: <span class="font-semibold text-gray-800"
+                                        x-text="investment.totalCoins"></span></p>
+                                <p class="text-gray-700">Starting Time: <span class="font-semibold text-gray-800"
+                                        x-text="formatDateTime(investment.startingTime)"></span></p>
+                                <p class="text-gray-700">Duration: <span class="font-semibold text-gray-800"
+                                        x-text="formatDuration(investment.duration)"></span></p>
+                                <p class="text-green-600">Potential Profit: <span class="font-semibold"
+                                        x-text="investment.profit"></span></p>
+                                <p class="text-red-600">Potential Loss: <span class="font-semibold"
+                                        x-text="investment.loss"></span></p>
+                            </div>
+                            <!-- Edit and Delete Buttons -->
+                            <div class="flex justify-end mt-4 space-x-2">
+                                <button @click="editInvestment(index)"
+                                    class="px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">
+                                    Edit
+                                </button>
+                                <button @click="deleteInvestment(index)"
+                                    class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Alpine.js Component Script -->
+    <script>
+        function investmentApp() {
+            return {
+                page: 'calculator',
+                coinName: '',
+                investedPrice: 0,
+                expectedPrice: 0,
+                expectedLossPrice: 0,
+                investmentAmount: 0,
+                startingTime: '',
+                durationDays: 0,
+                durationHours: 0,
+                durationMinutes: 0,
+                investments: JSON.parse(localStorage.getItem('investments')) || [],
+                editIndex: null,
+                isEditing: false,
+
+                // Computed properties
+                get totalCoins() {
+                    return this.investedPrice > 0 ? (this.investmentAmount / this.investedPrice).toFixed(2) : 0;
+                },
+
+                get profit() {
+                    if (this.expectedPrice > this.investedPrice) {
+                        return ((this.expectedPrice - this.investedPrice) * this.totalCoins).toFixed(2);
+                    }
+                    return 0;
+                },
+
+                get expectedLoss() {
+                    if (this.expectedLossPrice < this.investedPrice) {
+                        return ((this.investedPrice - this.expectedLossPrice) * this.totalCoins).toFixed(2);
+                    }
+                    return 0;
+                },
+
+                // Methods
+                formatDateTime(dateTime) {
+                    if (!dateTime) return '';
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    };
+                    return new Date(dateTime).toLocaleString([], options);
+                },
+
+                formatDuration(duration) {
+                    const days = Math.floor(duration / (24 * 60));
+                    const hours = Math.floor((duration % (24 * 60)) / 60);
+                    const minutes = duration % 60;
+                    return `${days}d ${hours}h ${minutes}m`;
+                },
+
+                saveInvestment() {
+                    // Calculate total duration in minutes
+                    const totalDurationMinutes = (this.durationDays * 24 * 60) + (this.durationHours * 60) + this.durationMinutes;
+
+                    const investmentData = {
+                        coinName: this.coinName,
+                        investedPrice: this.investedPrice,
+                        expectedPrice: this.expectedPrice,
+                        expectedLossPrice: this.expectedLossPrice,
+                        investmentAmount: this.investmentAmount,
+                        startingTime: this.startingTime,
+                        duration: totalDurationMinutes,
+                        totalCoins: this.totalCoins,
+                        profit: this.profit,
+                        loss: this.expectedLoss,
+                    };
+
+                    if (this.isEditing && this.editIndex !== null) {
+                        // Update existing investment
+                        this.investments.splice(this.editIndex, 1, investmentData);
+                    } else {
+                        // Add new investment to the list
+                        this.investments.push(investmentData);
+                    }
+
+                    // Store updated list in local storage
+                    localStorage.setItem('investments', JSON.stringify(this.investments));
+
+                    // Clear input fields after saving
+                    this.clearForm();
+                },
+
+                deleteInvestment(index) {
+                    // Remove the investment at the given index
+                    this.investments.splice(index, 1);
+
+                    // Update local storage
+                    localStorage.setItem('investments', JSON.stringify(this.investments));
+                },
+
+                editInvestment(index) {
+                    const investment = this.investments[index];
+
+                    // Load investment data into the form
+                    this.editIndex = index;
+                    this.isEditing = true;
+                    this.coinName = investment.coinName;
+                    this.investedPrice = investment.investedPrice;
+                    this.expectedPrice = investment.expectedPrice;
+                    this.expectedLossPrice = investment.expectedLossPrice;
+                    this.investmentAmount = investment.investmentAmount;
+                    this.startingTime = investment.startingTime;
+
+                    // Convert duration back into days, hours, and minutes
+                    const totalMinutes = investment.duration;
+                    this.durationDays = Math.floor(totalMinutes / (24 * 60));
+                    this.durationHours = Math.floor((totalMinutes % (24 * 60)) / 60);
+                    this.durationMinutes = totalMinutes % 60;
+
+                    // Switch to the calculator page
+                    this.page = 'calculator';
+                },
+
+                clearForm() {
+                    this.coinName = '';
+                    this.investedPrice = 0;
+                    this.expectedPrice = 0;
+                    this.expectedLossPrice = 0;
+                    this.investmentAmount = 0;
+                    this.startingTime = '';
+                    this.durationDays = 0;
+                    this.durationHours = 0;
+                    this.durationMinutes = 0;
+                    this.editIndex = null;
+                    this.isEditing = false;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
